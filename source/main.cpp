@@ -8,6 +8,9 @@
 
 int main()
 {
+	const int FRAME_RATE = 60;
+	const float FRAME_TIME = 1.0f / FRAME_RATE;
+
 	if (!glfwInit())
 	{
 		printf("Failed to initialize GLFW.\n");
@@ -36,25 +39,42 @@ int main()
 
 	double time_last = glfwGetTime();
 	double time_current = time_last;
+	double frame_time_counter = 0.0;
 
 	while (!glfwWindowShouldClose(window))
 	{
+		//
+		// Update
+		//
+
 		glfwPollEvents();
 
 		time_last = time_current;
 		time_current = glfwGetTime();
 		double dt = time_current - time_last;
 
+		frame_time_counter += dt;
+
 		if (Input::IsKeyDown(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window, true);
 
 		scene.Update(dt);
 
-		renderer.Prepare();
-		scene.Draw(renderer.GetSpriteBatch());
-		renderer.Cleanup();
+		//
+		// Render
+		//
 
-		glfwSwapBuffers(window);
+		if (frame_time_counter >= FRAME_TIME)
+		{
+			// Reset the frame time counter.
+			frame_time_counter = 0;
+
+			renderer.Prepare();
+			scene.Draw(renderer.GetSpriteBatch(), renderer.CalculateViewportBounds());
+			renderer.Cleanup();
+
+			glfwSwapBuffers(window);
+		}
 	}
 
 	glfwTerminate();

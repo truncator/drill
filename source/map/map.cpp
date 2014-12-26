@@ -133,23 +133,16 @@ Tile& Map::GetTile(const glm::vec2& position)
 	}
 }
 
-void Map::CalculateVisibleChunks(const glm::vec3& camera_position)
+void Map::CalculateVisibleChunks(const glm::vec4& viewport_bounds)
 {
-	float viewport_width = -camera_position.z;
-	float viewport_height = viewport_width * (9.0f / 16.0f);
-	float left = camera_position.x - viewport_width / 2;
-	float bottom = camera_position.y - viewport_height / 2;
-	float right = left + viewport_width;
-	float top = bottom + viewport_height;
-
 	for (Chunk& chunk : m_chunks)
 	{
 		const BoundingBox& bounding_box = chunk.GetBoundingBox();
 		glm::vec3 size = bounding_box.m_size;
 		glm::vec3 top_left = bounding_box.m_top_left - size / 2.0f;
 
-		if (top_left.y + size.y < bottom || top_left.y - size.y / 2.0f > top ||
-				top_left.x > right || top_left.x + size.x < left)
+		if (top_left.y + size.y < viewport_bounds.z || top_left.y - size.y / 2.0f > viewport_bounds.w ||
+				top_left.x > viewport_bounds.y || top_left.x + size.x < viewport_bounds.x)
 		{
 			chunk.SetVisible(false);
 			continue;

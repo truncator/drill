@@ -42,6 +42,7 @@ public:
 	// Get accessors.
 	Tile::Type GetType() const;
 	const glm::vec3& GetColor() const;
+	float GetMetallic() const;
 	int GetHealth() const;
 
 private:

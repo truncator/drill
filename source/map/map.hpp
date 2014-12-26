@@ -19,7 +19,7 @@ public:
 	Chunk& GetChunk(const glm::vec2& position);
 	Tile& GetTile(const glm::vec2& position);
 
-	void CalculateVisibleChunks(const glm::vec3& camera_position);
+	void CalculateVisibleChunks(const glm::vec4& viewport_bounds);
 	std::vector<Chunk>& GetChunks();
 
 private:

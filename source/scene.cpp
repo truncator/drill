@@ -5,7 +5,7 @@
 
 Scene::Scene() :
 	m_camera(glm::vec3(0.0f, 10.0f, -100.0f)),
-	m_map(3, 20),
+	m_map(5, 20),
 	m_drill(glm::vec2(0.0f, -1.0f))
 {
 	m_drill.Activate();
@@ -48,19 +48,30 @@ void Scene::Update(double dt)
 		Inventory::ItemIterator item = m_inventory.GetItem((Item::Type)i);
 		Item::Type type = item->first;
 		int count = item->second;
-		printf("%s: %i\n", Item::GetName(type).c_str(), count);
+		//printf("%s: %i\n", Item::GetName(type).c_str(), count);
 	}
 }
 
-void Scene::Draw(SpriteBatch& sprite_batch)
+void Scene::Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds)
 {
 	//
 	// Map
 	//
 
-	m_map.CalculateVisibleChunks(m_camera.GetPosition());
+	Shader::SetUniformVec2("light_position", m_drill.GetBitPosition() + glm::vec2(m_drill.GetBitWidth() / 2.0f));
+	Shader::SetUniformMatrix("model", glm::mat4());
 
+	m_map.CalculateVisibleChunks(viewport_bounds);
 	std::vector<Chunk>& chunks = m_map.GetChunks();
+
+	sprite_batch.Begin();
+	Shader::Bind("sky");
+	glm::vec2 position = glm::vec2(viewport_bounds.x, viewport_bounds.w);
+	glm::vec2 size = glm::vec2(viewport_bounds.y - viewport_bounds.x, viewport_bounds.w - viewport_bounds.z) * 2.0f;
+	sprite_batch.DrawQuad(position - size / 2.0f, size, 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	sprite_batch.End();
+
+	Shader::Bind("base");
 
 	for (Chunk& chunk : chunks)
 	{

@@ -76,6 +76,21 @@ const glm::vec3& Tile::GetColor() const
 	return m_color;
 }
 
+float Tile::GetMetallic() const
+{
+	switch(m_type)
+	{
+		case Tile::Type::Iron:
+			return m_solid ? 0.5f : 0.25f;
+		case Tile::Type::Silver:
+			return m_solid ? 1.0f : 0.5f;
+		case Tile::Type::Gold:
+			return m_solid ? 1.0f : 0.5f;
+		default:
+			return 0.0f;
+	};
+}
+
 int Tile::GetHealth() const
 {
 	return m_health;
@@ -107,40 +122,19 @@ glm::vec3 Tile::GetInitialColor() const
 {
 	glm::vec3 variation = glm::vec3(Random::Float(-1.0f, 1.0f) * 0.025f);
 
-	if (m_solid)
+	switch(m_type)
 	{
-		switch(m_type)
-		{
-			case Tile::Type::Grass:
-				return glm::vec3(0.5f, 0.55f, 0.3f) + variation;
-			case Tile::Type::Limestone:
-				return glm::vec3(0.5f, 0.5f, 0.5f) + variation;
-			case Tile::Type::Iron:
-				return glm::vec3(0.7f, 0.6f, 0.5f) + variation;
-			case Tile::Type::Silver:
-				return glm::vec3(0.7f, 0.7f, 0.7f) + variation;
-			case Tile::Type::Gold:
-				return glm::vec3(0.8f, 0.65f, 0.4f) + variation;
-			default:
-				return glm::vec3(1.0f, 0.0f, 1.0f) + variation;
-		};
-	}
-	else
-	{
-		switch(m_type)
-		{
-			case Tile::Type::Grass:
-				return glm::vec3(0.3f, 0.35f, 0.15f) + variation;
-			case Tile::Type::Limestone:
-				return glm::vec3(0.3f, 0.3f, 0.3f) + variation;
-			case Tile::Type::Iron:
-				return glm::vec3(0.36f, 0.32f, 0.28f) + variation;
-			case Tile::Type::Silver:
-				return glm::vec3(0.5f, 0.5f, 0.5f) + variation;
-			case Tile::Type::Gold:
-				return glm::vec3(0.51f, 0.45f, 0.3f) + variation;
-			default:
-				return glm::vec3(1.0f, 0.0f, 1.0f) + variation;
-		};
-	}
+		case Tile::Type::Grass:
+			return m_solid ? glm::vec3(0.5f, 0.55f, 0.3f) + variation : glm::vec3(0.3f, 0.35f, 0.15f) + variation;
+		case Tile::Type::Limestone:
+			return m_solid ? glm::vec3(0.5f, 0.5f, 0.5f) + variation : glm::vec3(0.3f, 0.3f, 0.3f) + variation;
+		case Tile::Type::Iron:
+			return m_solid ? glm::vec3(0.7f, 0.6f, 0.5f) + variation : glm::vec3(0.36f, 0.32f, 0.28f) + variation;
+		case Tile::Type::Silver:
+			return m_solid ? glm::vec3(0.7f, 0.7f, 0.7f) + variation : glm::vec3(0.5f, 0.5f, 0.5f) + variation;
+		case Tile::Type::Gold:
+			return m_solid ? glm::vec3(0.8f, 0.65f, 0.4f) + variation : glm::vec3(0.51f, 0.45f, 0.3f) + variation;
+		default:
+			return glm::vec3(1.0f, 0.0f, 1.0f) + variation;
+	};
 }

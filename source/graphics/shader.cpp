@@ -3,7 +3,9 @@
 void Shader::Initialize()
 {
 	Load("base");
-	g_current_program = &g_programs.find("base")->second;
+	Load("sky");
+
+	Bind("base");
 }
 
 void Shader::Load(const std::string& name)

@@ -21,6 +21,9 @@ public:
 	void Prepare();
 	void Cleanup();
 
+	// Calculate the viewport bounds in world space.
+	glm::vec4 CalculateViewportBounds() const;
+
 	SpriteBatch& GetSpriteBatch();
 
 private:

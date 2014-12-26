@@ -22,15 +22,11 @@ void Renderer::Prepare()
 {
 	Clear();
 
-	glm::vec3 position = m_camera->GetPosition();
-	float viewport_width = -position.z;
-	float viewport_height = viewport_width * (9.0f / 16.0f);
-	float left = position.x - viewport_width / 2;
-	float bottom = position.y - viewport_height / 2;
-	float right = left + viewport_width;
-	float top = bottom + viewport_height;
+	glm::vec4 viewport = CalculateViewportBounds();
+	glm::mat4 view_projection = glm::ortho<float>(viewport.x, viewport.y, viewport.z, viewport.w, 0.0f, 1.0f); 
 
-	glm::mat4 view_projection = glm::ortho<float>(left, right, bottom, top, 0.0f, 1.0f); 
+	Shader::Bind("sky");
+	Shader::SetUniformMatrix("view_projection", view_projection);
 
 	Shader::Bind("base");
 	Shader::SetUniformMatrix("view_projection", view_projection);
@@ -38,7 +34,23 @@ void Renderer::Prepare()
 
 void Renderer::Cleanup()
 {
+	Shader::Unbind("sky");
 	Shader::Unbind("base");
+}
+
+glm::vec4 Renderer::CalculateViewportBounds() const
+{
+	glm::vec3 position = m_camera->GetPosition();
+
+	float viewport_width = -position.z;
+	float viewport_height = viewport_width * (9.0f / 16.0f);
+
+	float left = position.x - viewport_width / 2;
+	float bottom = position.y - viewport_height / 2;
+	float right = left + viewport_width;
+	float top = bottom + viewport_height;
+
+	return glm::vec4(left, right, bottom, top);
 }
 
 SpriteBatch& Renderer::GetSpriteBatch()

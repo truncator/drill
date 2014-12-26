@@ -8,7 +8,7 @@ Drill::Drill(glm::vec2 rig_position) :
 	m_bit_position(m_rig_position + glm::vec2(1, -m_rig_size.y + 2)),
 	m_bit_width(1),
 	m_active(false),
-	m_cooldown(1.0f),
+	m_cooldown(0.1f),
 	m_timer(m_cooldown)
 {
 }

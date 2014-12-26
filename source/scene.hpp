@@ -19,7 +19,7 @@ public:
 
 	void Update(double dt);
 
-	void Draw(SpriteBatch& sprite_batch);
+	void Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds);
 
 	// Get accessors.
 	Camera& GetCamera();
