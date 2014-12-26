@@ -14,8 +14,6 @@ public:
 
 	enum Type
 	{
-		None,
-
 		Grass,
 		Limestone,
 
@@ -23,7 +21,8 @@ public:
 		Silver,
 		Gold,
 
-		TypeCount
+		TypeCount,
+		None
 	};
 
 public:

@@ -4,7 +4,7 @@
 #include "graphics/spritebatch.hpp"
 
 Scene::Scene() :
-	m_camera(glm::vec3(0.0f, 10.0f, -150.0f)),
+	m_camera(glm::vec3(0.0f, 10.0f, -100.0f)),
 	m_map(3, 20),
 	m_drill(glm::vec2(0.0f, -1.0f))
 {
@@ -21,20 +21,34 @@ void Scene::Update(double dt)
 	glm::vec2 bit_position = m_drill.GetBitPosition();
 	m_camera.MoveTo(glm::vec3(bit_position.x, bit_position.y, m_camera.GetPosition().z));
 
+	// Update the drill with its current tile.
 	Tile& tile = m_map.GetTile(bit_position);
-	if (tile.IsDead())
+	m_drill.Update(tile, dt);
+
+	if (tile.IsDirty())
 	{
-		m_map.GetChunk(bit_position);
+		Item::Type type = Item::GetTypeFromTile(tile.GetType());
+		m_inventory.AddItem(type, 1);
 	}
 
-	m_drill.Update(tile, dt);
+	// Update the camera's position.
 	m_camera.Update(dt);
 
+	// Rebuild dirty chunk meshes.
 	std::vector<Chunk>& chunks = m_map.GetChunks();
 	for (Chunk& chunk : chunks)
 	{
 		if (chunk.IsDirty())
 			chunk.RebuildMesh();
+	}
+
+	int item_count = (int)Item::Type::ItemCount;
+	for (int i = 0; i < item_count; i++)
+	{
+		Inventory::ItemIterator item = m_inventory.GetItem((Item::Type)i);
+		Item::Type type = item->first;
+		int count = item->second;
+		printf("%s: %i\n", Item::GetName(type).c_str(), count);
 	}
 }
 
