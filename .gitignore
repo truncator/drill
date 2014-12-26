@@ -1,0 +1,9 @@
+*.d
+*.o
+*.un~
+*.swp
+
+binary/
+build/obj
+build/Makefile
+*.make
