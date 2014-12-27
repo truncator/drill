@@ -4,11 +4,48 @@
 #include "graphics/spritebatch.hpp"
 
 Scene::Scene() :
-	m_camera(glm::vec3(0.0f, 10.0f, -100.0f)),
+	m_camera(glm::vec3(0.0f, 10.0f, -150.0f)),
 	m_map(5, 20),
-	m_drill(glm::vec2(0.0f, -1.0f))
+	m_drill(glm::vec2(0.0f, -1.0f)),
+	m_lights(128, Light())
 {
 	m_drill.Activate();
+
+	Light rig_light = Light(glm::vec2(m_drill.GetRigPosition().x, m_drill.GetRigPosition().y), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 10.0f);
+	Light bit_light = Light(glm::vec2(m_drill.GetBitPosition().x, m_drill.GetBitPosition().y), glm::vec3(1.0f, 0.8f, 0.8f), 1.0f, 30.0f);
+	bit_light.SetStatic(false);
+
+	m_lights[0] = rig_light;
+	m_drill.AttachLight(&m_lights[0], glm::vec2(1.0f, 0.0f));
+
+	m_lights[1] = bit_light;
+	m_drill.AttachLight(&m_lights[1], glm::vec2(m_drill.GetBitWidth() / 2.0f));
+
+	m_drill.InitializeLights(m_drill.GetBitPosition());
+
+	/*
+	int light_index = 2;
+
+	std::vector<Chunk>& chunks = m_map.GetChunks();
+	for (Chunk& chunk : chunks)
+	{
+		for (int y = 0; y < 32; y++)
+		{
+			for (int x = 0; x < 32; x++)
+			{
+				if (chunk.GetTile(x, y).GetType() == Tile::Type::Gold)
+				{
+					if (light_index >= 100)
+						continue;
+
+					glm::vec2 chunk_origin = glm::vec2(chunk.GetBoundingBox().m_top_left.x, chunk.GetBoundingBox().m_top_left.y);
+					//m_lights[light_index] = Light(chunk_origin + glm::vec2(x, 32 - y), glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 1.0f);
+					light_index++;
+				}
+			}
+		}
+	}
+	*/
 }
 
 Camera& Scene::GetCamera()
@@ -41,6 +78,11 @@ void Scene::Update(double dt)
 		if (chunk.IsDirty())
 			chunk.RebuildMesh();
 	}
+
+	m_drill.UpdateLights(m_drill.GetBitPosition());
+
+	Shader::Bind("base");
+	PassLightUniforms();
 
 	int item_count = (int)Item::Type::ItemCount;
 	for (int i = 0; i < item_count; i++)
@@ -126,4 +168,27 @@ void Scene::Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds)
 	sprite_batch.DrawQuad(bit_position, glm::vec2(bit_width, 1.0f), 0.0f, glm::vec3(0.8f, 0.3f, 0.3f));
 
 	sprite_batch.End();
+}
+
+void Scene::PassLightUniforms()
+{
+	int size = m_lights.size();
+	int active_lights = 0;
+
+	for (int i = 0; i < size; i++)
+	{
+		if (!m_lights[i].IsActive())
+			continue;
+
+		std::string base = std::string("lights[") + std::to_string(i) + "].";
+
+		Shader::SetUniformVec2(base + "position", m_lights[i].GetPosition());
+		Shader::SetUniformVec3(base + "color", m_lights[i].GetColor());
+		Shader::SetUniformFloat(base + "intensity", m_lights[i].GetIntensity());
+		Shader::SetUniformFloat(base + "falloff", m_lights[i].GetFalloff());
+
+		active_lights++;
+	}
+
+	Shader::SetUniformInt("active_lights", active_lights);
 }

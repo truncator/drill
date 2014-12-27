@@ -4,6 +4,7 @@
 #include "map/map.hpp"
 #include "drill/drill.hpp"
 #include "item/inventory.hpp"
+#include "graphics/light.hpp"
 
 // Forward declarations.
 class SpriteBatch;
@@ -18,8 +19,9 @@ public:
 	Scene();
 
 	void Update(double dt);
-
 	void Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds);
+
+	void PassLightUniforms();
 
 	// Get accessors.
 	Camera& GetCamera();
@@ -32,4 +34,6 @@ private:
 
 	Drill m_drill;
 	Inventory m_inventory;
+
+	std::vector<Light> m_lights;
 };

@@ -1,7 +1,16 @@
 #version 330
 
-uniform vec2 light_position;
-uniform float light_intensity;
+struct Light
+{
+	vec2 position;
+	vec3 color;
+	float intensity;
+	float falloff;
+};
+
+const int MAX_LIGHTS = 100;
+uniform Light lights[MAX_LIGHTS];
+uniform int active_lights;
 
 in vec3 v_color;
 in vec3 v_position;
@@ -20,18 +29,27 @@ float attenuate(float dist, float a, float b)
 
 void main()
 {
-	// Light influence.
-	float dist = distance(v_position.xy, light_position);
-	float brightness = attenuate(dist - 1.5, 0.0, 0.08);
+	vec3 color_sum = vec3(0.0, 0.0, 0.0);
 
-	// Metallic contribution.
-	brightness += 1.0 * v_metallic * brightness;
+	int num_lights = min(active_lights, MAX_LIGHTS);
+	for (int i = 0; i < num_lights; i++)
+	{
+		// Light influence.
+		float dist = distance(v_position.xy, lights[i].position);
+		float light_contribution = attenuate(dist - 1.5, 0.0, 1.0 / lights[i].falloff) * lights[i].intensity;
 
-	// Depth falloff.
-	const float DEPTH_FALLOFF_RATE = 20.0;
-	const float DEPTH_FALLOFF_HEIGHT = 10.0;
-	float falloff = max(DEPTH_FALLOFF_HEIGHT + v_position.y, 0.0);
-	brightness += falloff / DEPTH_FALLOFF_RATE;
+		light_contribution += light_contribution * v_metallic;
 
-	frag_color = vec4(brightness * v_color, 1.0);
+		// Depth falloff.
+		const float DEPTH_FALLOFF_RATE = 20.0;
+		const float DEPTH_FALLOFF_HEIGHT = 10.0;
+		float falloff = max(DEPTH_FALLOFF_HEIGHT + v_position.y, 0.0);
+		float sun_contribution = falloff / DEPTH_FALLOFF_RATE;
+		vec3 sun_color = vec3(1.0, 1.0, 1.0);
+
+		color_sum += light_contribution * lights[i].color * v_color;
+		color_sum += sun_contribution * sun_color * v_color;
+	}
+
+	frag_color = vec4(color_sum, 1.0);
 }

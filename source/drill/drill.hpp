@@ -1,6 +1,7 @@
 #pragma once
 
 #include "precompiled.hpp"
+#include "../graphics/lightsource.hpp"
 
 // Forward declarations.
 class Tile;
@@ -9,7 +10,7 @@ class Tile;
 // Drill
 //
 
-class Drill
+class Drill : public LightSource
 {
 public:
 	Drill(glm::vec2 position);

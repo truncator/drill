@@ -133,13 +133,22 @@ void Shader::Unbind(const std::string& name)
 	g_current_program = nullptr;
 }
 
-void Shader::SetUniformMatrix(const std::string& uniform, const glm::mat4& value)
+void Shader::SetUniformInt(const std::string& uniform, GLint value)
 {
 	assert(g_current_program != nullptr);
 	assert(g_current_program->m_binded);
 
 	GLint location = glGetUniformLocation(g_current_program->m_id, uniform.c_str());
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	glUniform1i(location, value);
+}
+
+void Shader::SetUniformFloat(const std::string& uniform, GLfloat value)
+{
+	assert(g_current_program != nullptr);
+	assert(g_current_program->m_binded);
+
+	GLint location = glGetUniformLocation(g_current_program->m_id, uniform.c_str());
+	glUniform1f(location, value);
 }
 
 void Shader::SetUniformVec2(const std::string& uniform, const glm::vec2& value)
@@ -151,6 +160,15 @@ void Shader::SetUniformVec2(const std::string& uniform, const glm::vec2& value)
 	glUniform2f(location, value.x, value.y);
 }
 
+void Shader::SetUniformVec3(const std::string& uniform, const glm::vec3& value)
+{
+	assert(g_current_program != nullptr);
+	assert(g_current_program->m_binded);
+
+	GLint location = glGetUniformLocation(g_current_program->m_id, uniform.c_str());
+	glUniform3f(location, value.x, value.y, value.z);
+}
+
 void Shader::SetUniformVec4(const std::string& uniform, const glm::vec4& value)
 {
 	assert(g_current_program != nullptr);
@@ -160,11 +178,11 @@ void Shader::SetUniformVec4(const std::string& uniform, const glm::vec4& value)
 	glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
-void Shader::SetUniformInt(const std::string& uniform, GLint value)
+void Shader::SetUniformMatrix(const std::string& uniform, const glm::mat4& value)
 {
 	assert(g_current_program != nullptr);
 	assert(g_current_program->m_binded);
 
 	GLint location = glGetUniformLocation(g_current_program->m_id, uniform.c_str());
-	glUniform1i(location, value);
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "spritebatch.hpp"
+#include "light.hpp"
 
 // Forward declarations.
 class Camera;
@@ -23,6 +24,8 @@ public:
 
 	// Calculate the viewport bounds in world space.
 	glm::vec4 CalculateViewportBounds() const;
+
+	void PassLightUniforms(const std::vector<Light>& lights);
 
 	SpriteBatch& GetSpriteBatch();
 
