@@ -22,6 +22,8 @@ public:
 	void Prepare();
 	void Cleanup();
 
+	void PrepareScreenspace();
+
 	// Calculate the viewport bounds in world space.
 	glm::vec4 CalculateViewportBounds() const;
 

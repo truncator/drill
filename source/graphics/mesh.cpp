@@ -4,7 +4,7 @@ Mesh::Mesh() :
 	m_initialized(false),
 	m_vbo(0),
 	m_vao(0),
-	m_vertices(0, Mesh::Vertex(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 0.0f))
+	m_vertices(0, Mesh::Vertex(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f), 0.0f))
 {
 }
 
@@ -29,6 +29,7 @@ void Mesh::Finalize()
 	{
 		glm::vec3 position = vertex.m_position;
 		glm::vec3 color = vertex.m_color;
+		glm::vec2 uv = glm::vec2(0.0f, 0.0f);
 		float metallic = vertex.m_metallic;
 
 		vertex_data.push_back(position.x);
@@ -37,6 +38,8 @@ void Mesh::Finalize()
 		vertex_data.push_back(color.x);
 		vertex_data.push_back(color.y);
 		vertex_data.push_back(color.z);
+		vertex_data.push_back(uv.x);
+		vertex_data.push_back(uv.y);
 		vertex_data.push_back(metallic);
 	}
 
@@ -56,7 +59,10 @@ void Mesh::Finalize()
 	glVertexAttribPointer(1, 3, GL_FLOAT, false, sizeof(Mesh::Vertex), (GLvoid*)(3 * sizeof(GLfloat)));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 1, GL_FLOAT, false, sizeof(Mesh::Vertex), (GLvoid*)(6 * sizeof(GLfloat)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, false, sizeof(Mesh::Vertex), (GLvoid*)(6 * sizeof(GLfloat)));
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 1, GL_FLOAT, false, sizeof(Mesh::Vertex), (GLvoid*)(8 * sizeof(GLfloat)));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -75,6 +81,7 @@ void Mesh::Rebuild()
 	{
 		glm::vec3 position = vertex.m_position;
 		glm::vec3 color = vertex.m_color;
+		glm::vec2 uv = glm::vec2(0.0f, 0.0f);
 		float metallic = vertex.m_metallic;
 
 		vertex_data.push_back(position.x);
@@ -83,6 +90,8 @@ void Mesh::Rebuild()
 		vertex_data.push_back(color.x);
 		vertex_data.push_back(color.y);
 		vertex_data.push_back(color.z);
+		vertex_data.push_back(uv.x);
+		vertex_data.push_back(uv.y);
 		vertex_data.push_back(metallic);
 	}
 

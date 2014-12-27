@@ -14,10 +14,16 @@ solution "drill"
 			"-std=c++11"
 		}
 
+		includedirs
+		{
+			"../library/stb_image/"
+		}
+
 		files
 		{
 			"../source/**.hpp",
 			"../source/**.cpp",
+			"../library/stb_image/stb_image.cpp"
 		}
 
 		links

@@ -32,6 +32,10 @@ float attenuate(float dist, float a, float b)
 
 void main()
 {
+	vec4 base_color = texture(tex, v_uv);
+	if (base_color.a < 0.5)
+		discard;
+
 	vec3 color_sum = vec3(0.0, 0.0, 0.0);
 
 	int num_lights = min(active_lights, MAX_LIGHTS);
@@ -50,8 +54,8 @@ void main()
 		float sun_contribution = falloff / DEPTH_FALLOFF_RATE;
 		vec3 sun_color = vec3(1.0, 1.0, 1.0);
 
-		color_sum += light_contribution * lights[i].color * v_color;
-		color_sum += sun_contribution * sun_color * v_color;
+		color_sum += light_contribution * lights[i].color * base_color.rgb;
+		color_sum += sun_contribution * sun_color * base_color.rgb;
 	}
 
 	frag_color = vec4(color_sum, 1.0);

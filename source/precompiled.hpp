@@ -32,6 +32,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// stb_image
+#include "stb_image.h"
+
 //
 // Project
 //

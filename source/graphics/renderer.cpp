@@ -3,6 +3,7 @@
 #include "precompiled.hpp"
 #include "camera.hpp"
 #include "shader.hpp"
+#include "texture.hpp"
 
 Renderer::Renderer(Camera* camera) :
 	m_sprite_batch(1000),
@@ -11,6 +12,7 @@ Renderer::Renderer(Camera* camera) :
 	assert(m_camera != nullptr);
 
 	glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
+	glViewport(0, 0, 1280, 720);
 }
 
 void Renderer::Clear()
@@ -20,22 +22,39 @@ void Renderer::Clear()
 
 void Renderer::Prepare()
 {
-	Clear();
-
 	glm::vec4 viewport = CalculateViewportBounds();
-	glm::mat4 view_projection = glm::ortho<float>(viewport.x, viewport.y, viewport.z, viewport.w, 0.0f, 1.0f); 
+	glm::mat4 projection = glm::ortho<float>(viewport.x, viewport.y, viewport.z, viewport.w, 0.0f, 1.0f); 
 
 	Shader::Bind("sky");
-	Shader::SetUniformMatrix("view_projection", view_projection);
+	Shader::SetUniformMatrix("projection", projection);
 
 	Shader::Bind("base");
-	Shader::SetUniformMatrix("view_projection", view_projection);
+	Shader::SetUniformMatrix("projection", projection);
+
+	Texture::Bind("texture");
+}
+
+void Renderer::PrepareScreenspace()
+{
+	// Winding must be reversed going from world to screenspace coordinates.
+	glFrontFace(GL_CW);
+
+	glm::mat4 projection = glm::ortho<float>(0.0f, 1280.0f, 720.0f, 0.0f, 0.0f, 1.0f);
+
+	Shader::Bind("base_textured");
+	Shader::SetUniformMatrix("projection", projection);
+	Shader::SetUniformMatrix("model", glm::mat4());
+
+	Texture::Bind("texture");
 }
 
 void Renderer::Cleanup()
 {
-	Shader::Unbind("sky");
+	Texture::Unbind();
 	Shader::Unbind("base");
+
+	// Restore original winding.
+	glFrontFace(GL_CCW);
 }
 
 glm::vec4 Renderer::CalculateViewportBounds() const

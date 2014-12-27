@@ -9,20 +9,6 @@
 
 class SpriteBatch
 {
-private:
-
-	//
-	// Sprite Vertex
-	//     Used only for determining batch size and indices.
-	//
-
-	struct SpriteVertex
-	{
-		GLfloat m_position[3];
-		GLfloat m_color[3];
-		//GLfloat m_uv[2];
-	};
-
 public:
 	SpriteBatch(unsigned int size);
 	~SpriteBatch();
@@ -31,7 +17,7 @@ public:
 	void Begin();
 	void End();
 
-	void DrawQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec3& color);
+	void DrawQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec3& color, const glm::vec4& uv);
 
 private:
 	// Buffer queued vertex data and submit a draw call.

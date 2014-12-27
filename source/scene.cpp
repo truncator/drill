@@ -2,6 +2,7 @@
 
 #include "graphics/shader.hpp"
 #include "graphics/spritebatch.hpp"
+#include "graphics/text.hpp"
 
 Scene::Scene() :
 	m_camera(glm::vec3(0.0f, 10.0f, -150.0f)),
@@ -110,7 +111,7 @@ void Scene::Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds)
 	Shader::Bind("sky");
 	glm::vec2 position = glm::vec2(viewport_bounds.x, viewport_bounds.w);
 	glm::vec2 size = glm::vec2(viewport_bounds.y - viewport_bounds.x, viewport_bounds.w - viewport_bounds.z) * 2.0f;
-	sprite_batch.DrawQuad(position - size / 2.0f, size, 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	sprite_batch.DrawQuad(position - size / 2.0f, size, 0.0f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 	sprite_batch.End();
 
 	Shader::Bind("base");
@@ -143,8 +144,8 @@ void Scene::Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds)
 	int bit_length = glm::abs(bit_position.y - rig_position.y);
 	int bit_width = m_drill.GetBitWidth();
 
-	sprite_batch.DrawQuad(rig_position, m_drill.GetRigSize(), 0.0f, glm::vec3(0.8f, 0.8f, 0.8f));
-	sprite_batch.DrawQuad(rig_position + glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f), 0.0f, glm::vec3(0.8f, 0.8f, 0.8f));
+	sprite_batch.DrawQuad(rig_position, m_drill.GetRigSize(), 0.0f, glm::vec3(0.8f, 0.8f, 0.8f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+	sprite_batch.DrawQuad(rig_position + glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f), 0.0f, glm::vec3(0.8f, 0.8f, 0.8f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
 	// Draw the full length of the drill bit.
 	for (int i = 0; i < bit_length; i++)
@@ -158,14 +159,14 @@ void Scene::Draw(SpriteBatch& sprite_batch, const glm::vec4& viewport_bounds)
 		glm::vec2 outline = bit - glm::vec2(outline_width, 0.0f);
 
 		// Outline.
-		sprite_batch.DrawQuad(outline, glm::vec2(scaled_width + outline_width * 2, 1), 0.0f, glm::vec3(0.3f, 0.3f, 0.3f));
+		sprite_batch.DrawQuad(outline, glm::vec2(scaled_width + outline_width * 2, 1), 0.0f, glm::vec3(0.3f, 0.3f, 0.3f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
 		// Bit.
-		sprite_batch.DrawQuad(bit, glm::vec2(scaled_width, 1.0f), 0.0f, glm::vec3(0.8f, 0.8f, 0.8f));
+		sprite_batch.DrawQuad(bit, glm::vec2(scaled_width, 1.0f), 0.0f, glm::vec3(0.8f, 0.8f, 0.8f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 	}
 
 	// Drill bit.
-	sprite_batch.DrawQuad(bit_position, glm::vec2(bit_width, 1.0f), 0.0f, glm::vec3(0.8f, 0.3f, 0.3f));
+	sprite_batch.DrawQuad(bit_position, glm::vec2(bit_width, 1.0f), 0.0f, glm::vec3(0.8f, 0.3f, 0.3f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
 	sprite_batch.End();
 }

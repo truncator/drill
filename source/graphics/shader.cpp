@@ -3,9 +3,8 @@
 void Shader::Initialize()
 {
 	Load("base");
+	Load("base_textured");
 	Load("sky");
-
-	Bind("base");
 }
 
 void Shader::Load(const std::string& name)

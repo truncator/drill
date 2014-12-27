@@ -18,10 +18,11 @@ public:
 	{
 		glm::vec3 m_position;
 		glm::vec3 m_color;
+		glm::vec2 m_uv;
 		float m_metallic;
 
-		Vertex(glm::vec3 position, glm::vec3 color, float metallic) :
-			m_position(position), m_color(color), m_metallic(metallic)
+		Vertex(glm::vec3 position, glm::vec3 color, glm::vec2 uv, float metallic) :
+			m_position(position), m_color(color), m_uv(uv), m_metallic(metallic)
 		{
 		}
 	};

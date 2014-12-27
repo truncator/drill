@@ -4,6 +4,8 @@
 #include "graphics/renderer.hpp"
 #include "graphics/camera.hpp"
 #include "graphics/shader.hpp"
+#include "graphics/texture.hpp"
+#include "graphics/text.hpp"
 #include "input/input.hpp"
 
 int main()
@@ -33,6 +35,7 @@ int main()
 
 	Input::Initialize(window);
 	Shader::Initialize();
+	Texture::Initialize();
 
 	Scene scene;
 	Renderer renderer = Renderer(&scene.GetCamera());
@@ -69,8 +72,16 @@ int main()
 			// Reset the frame time counter.
 			frame_time_counter = 0;
 
+			renderer.Clear();
+
 			renderer.Prepare();
 			scene.Draw(renderer.GetSpriteBatch(), renderer.CalculateViewportBounds());
+			renderer.Cleanup();
+
+			renderer.PrepareScreenspace();
+			renderer.GetSpriteBatch().Begin();
+			Text::DrawText("THIS IS A TEST", 20, 20, renderer.GetSpriteBatch());
+			renderer.GetSpriteBatch().End();
 			renderer.Cleanup();
 
 			glfwSwapBuffers(window);

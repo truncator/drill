@@ -28,12 +28,13 @@ void Chunk::RebuildMesh()
 		{
 			glm::vec3 position = glm::vec3(x * m_tile_size, y * m_tile_size, 0);
 			glm::vec3 color = m_tiles[y * m_width + x].GetColor();
+			glm::vec2 uv = glm::vec2(0.0f, 0.0f);
 			float metallic = m_tiles[y * m_width + x].GetMetallic();
 
-			Mesh::Vertex top_left     = Mesh::Vertex(position + glm::vec3(0.0f,  0.0f, 0.0f) * m_tile_size, color, metallic);
-			Mesh::Vertex bottom_left  = Mesh::Vertex(position + glm::vec3(0.0f, -1.0f, 0.0f) * m_tile_size, color, metallic);
-			Mesh::Vertex bottom_right = Mesh::Vertex(position + glm::vec3(1.0f, -1.0f, 0.0f) * m_tile_size, color, metallic);
-			Mesh::Vertex top_right    = Mesh::Vertex(position + glm::vec3(1.0f,  0.0f, 0.0f) * m_tile_size, color, metallic);
+			Mesh::Vertex top_left     = Mesh::Vertex(position + glm::vec3(0.0f,  0.0f, 0.0f) * m_tile_size, color, uv, metallic);
+			Mesh::Vertex bottom_left  = Mesh::Vertex(position + glm::vec3(0.0f, -1.0f, 0.0f) * m_tile_size, color, uv, metallic);
+			Mesh::Vertex bottom_right = Mesh::Vertex(position + glm::vec3(1.0f, -1.0f, 0.0f) * m_tile_size, color, uv, metallic);
+			Mesh::Vertex top_right    = Mesh::Vertex(position + glm::vec3(1.0f,  0.0f, 0.0f) * m_tile_size, color, uv, metallic);
 
 			m_mesh.AddVertex(bottom_left);
 			m_mesh.AddVertex(bottom_right);
